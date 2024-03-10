@@ -1,5 +1,4 @@
 import os
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
@@ -7,7 +6,6 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 import chevron
 
 from .utils import resolve_type, sanitize_name, serialize_to_python_code, to_python_name
-
 
 dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
 templates_path = dir_path / "templates"
@@ -17,7 +15,9 @@ def resolve_property_type(property: Dict[str, Any]) -> str:
     type_ = resolve_type(property["schema"])
     return (
         f"Optional[{type_}]"
-        if property.get("required") is False and property["schema"].get("type") != "boolean"
+        if property.get("required") is False
+        and property["schema"].get("type") != "boolean"
+        and not type_.startswith("Optional[")
         else type_
     )
 

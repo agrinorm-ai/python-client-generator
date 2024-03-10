@@ -52,7 +52,7 @@ class BaseClient(httpx.AsyncClient):
         }
 
         if _body:
-            kwargs["content"] = _body.json(**body_serializer_args)
+            kwargs["content"] = _body.model_dump_json(**body_serializer_args)
             kwargs["headers"] = {
                 **{"Content-Type": "application/json"},
                 **kwargs.get("headers", {}),

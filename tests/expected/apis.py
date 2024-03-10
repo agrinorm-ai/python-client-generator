@@ -43,7 +43,7 @@ class Api(BaseClient):
         )
         response.raise_for_status()
         return Foo.parse_raw(response.content)
-    
+
     async def put_foo_api_foo__foo_id__put(
         self,
         foo_id: UUID,

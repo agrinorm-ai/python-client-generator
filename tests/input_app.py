@@ -45,7 +45,7 @@ class Document(BaseModel):
 
 
 @router.get("/{foo_id}", response_model=Foo)
-async def read_foo(foo_id: UUID) -> Foo: # type: ignore
+async def read_foo(foo_id: UUID) -> Foo:  # type: ignore
     pass
 
 
@@ -55,7 +55,7 @@ async def list_foos(
     show_deleted: bool = Query(False),
     offset: Optional[int] = Query(0, ge=0, description="Query result offset"),
     limit: Optional[int] = Query(10, le=100, description="Query result limit"),
-) -> Paginated[Foo]: # type: ignore
+) -> Paginated[Foo]:  # type: ignore
     pass
 
 
@@ -71,22 +71,22 @@ async def create_foo(
 
 
 @router.patch("/{foo_id}", response_model=Foo)
-async def update_foo(foo_id: UUID) -> Foo: # type: ignore
+async def update_foo(foo_id: UUID) -> Foo:  # type: ignore
     pass
 
 
 @router.put("/{foo_id}", response_model=Foo)
-async def put_foo(foo_id: UUID) -> Foo: # type: ignore
+async def put_foo(foo_id: UUID) -> Foo:  # type: ignore
     pass
 
 
 @router.delete("/{foo_id}", response_model=Foo)
-async def delete_foo(foo_id: UUID) -> Foo: # type: ignore
+async def delete_foo(foo_id: UUID) -> Foo:  # type: ignore
     pass
 
 
 @router.post("/{foo_id}/documents", response_model=Document)
-async def upload_doc(foo_id: UUID, file: UploadFile = File(...)) -> Document: # type: ignore
+async def upload_doc(foo_id: UUID, file: UploadFile = File(...)) -> Document:  # type: ignore
     pass
 
 

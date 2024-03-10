@@ -1,6 +1,6 @@
 import filecmp
+import json
 import os
-
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict
@@ -13,7 +13,6 @@ from python_client_generator.generate_base_client import generate_base_client
 from python_client_generator.generate_models import generate_models
 from python_client_generator.generate_pyproject import generate_pyproject
 from python_client_generator.utils import assert_openapi_version
-
 
 EXPECTED_PATH = Path(os.path.dirname(os.path.realpath(__file__))) / "expected"
 
@@ -49,3 +48,12 @@ def test_assert_openapi_version(openapi: Dict[str, Any]) -> None:
     openapi_copy["openapi"] = "2.0.0"
     with pytest.raises(UnsupportedOpenAPISpec):
         assert_openapi_version(openapi_copy)
+
+
+def test_fastapi_openapi_generation(openapi: Dict[str, Any], tmp_path: Path) -> None:
+    print(tmp_path / "openapi.json")
+    (tmp_path / "openapi.json").write_text(json.dumps(openapi, indent=2))
+    assert (
+        filecmp.cmp(EXPECTED_PATH / "openapi.json", tmp_path / "openapi.json", shallow=False)
+        is True
+    )

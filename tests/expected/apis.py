@@ -25,7 +25,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Foo.parse_raw(response.content)
+        return Foo.model_validate_json(response.content)
 
     async def update_foo_api_foo__foo_id__patch(
         self,
@@ -42,7 +42,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Foo.parse_raw(response.content)
+        return Foo.model_validate_json(response.content)
 
     async def put_foo_api_foo__foo_id__put(
         self,
@@ -59,7 +59,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Foo.parse_raw(response.content)
+        return Foo.model_validate_json(response.content)
 
     async def delete_foo_api_foo__foo_id__delete(
         self,
@@ -76,7 +76,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Foo.parse_raw(response.content)
+        return Foo.model_validate_json(response.content)
 
     async def list_foos_api_foo_get(
         self,
@@ -104,7 +104,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return PaginatedFoo.parse_raw(response.content)
+        return PaginatedFoo.model_validate_json(response.content)
 
     async def create_foo_api_foo_post(
         self,
@@ -130,7 +130,7 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Foo.parse_raw(response.content)
+        return Foo.model_validate_json(response.content)
 
     async def upload_doc_api_foo__foo_id__documents_post(
         self,
@@ -153,6 +153,6 @@ class Api(BaseClient):
             **kwargs
         )
         response.raise_for_status()
-        return Document.parse_raw(response.content)
+        return Document.model_validate_json(response.content)
 
 

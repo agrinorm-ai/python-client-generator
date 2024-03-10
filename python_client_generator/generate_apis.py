@@ -13,6 +13,10 @@ templates_path = dir_path / "templates"
 
 def resolve_property_type(property: Dict[str, Any]) -> str:
     type_ = resolve_type(property["schema"])
+    # Newer fastapi.openapi() call keeps optional fields as required unless there is a
+    # default value specified, otherwise treated as Union[None,...]. In the type_
+    # generation we take care of marking these fields Optional, so we don't need to do
+    # it here to avoid double Optional[Optional[...]].
     return (
         f"Optional[{type_}]"
         if property.get("required") is False

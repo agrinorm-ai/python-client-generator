@@ -28,7 +28,7 @@ class Foo(BaseModel):
     field_5: Optional[str] = Field(default="default")
     field_6: Optional[str] = Field(default="default")
     field_7: Optional[Bar]
-    field_8: Optional[str]
+    field_8: Optional[FooEnum]
 
 
 class ValidationError(BaseModel):

@@ -72,12 +72,28 @@ def resolve_type(schema: Dict[str, Any], depth: int = 0, use_literals: bool = Fa
         for sub_schema in schema[union_keys[0]]:
             type_ = resolve_type(sub_schema, depth + 1)
             result.append(type_)
+
+        # Check whether this is an optional field, ie. whether it has null in the union.
+        # Note that this is different from  the case when we have a default value.
+        # Without the default value, the field is still marked as required.
+        is_optional: bool = False
+        if len(result) > 1 and "None" in result:
+            result = [x for x in result if x != "None"]
+            is_optional = True
+
+        return_string: str
         if len(result) > 1:
-            return f"Union[{', '.join(result)}]"
+            return_string = f"Union[{', '.join(result)}]"
         elif len(result) == 1:
-            return result[0]
+            return_string = result[0]
         else:
             raise Exception(f"Empty union type detected for '{schema['title']}'")
+
+        # Wrap in optional if needed.
+        if is_optional:
+            return f"Optional[{return_string}]"
+        else:
+            return return_string
     elif "type" not in schema:
         return "Any"
     elif schema["type"] == "object":
@@ -104,8 +120,9 @@ def resolve_type(schema: Dict[str, Any], depth: int = 0, use_literals: bool = Fa
         return "float"
     elif schema["type"] == "array":
         return "List[" + resolve_type(schema["items"], depth + 1) + "]"
-
-    raise Exception("property: ", schema)
+    elif schema["type"] == "null":
+        return "None"
+    raise Exception(f"title: {schema['title']}, property: ", schema)
 
 
 def assert_openapi_version(schema: Dict[str, Any]) -> None:

@@ -77,15 +77,25 @@ def get_fields(schema: Dict[str, Any]) -> List[Dict[str, Any]]:
         # Handle union cases by creating a __root__ defined model
         return [{"name": "__root__", "type": resolve_type(schema)}]
     else:
-        return [
-            {
-                "name": k,
-                "type": resolve_type(v, use_literals=True),
-                "optional": "required" not in schema or k not in schema["required"],
-                "field_args": serialize_args_dict(resolve_field_args(v)),
-            }
-            for k, v in schema["properties"].items()
-        ]
+        fields: list[dict[str, Any]] = []
+        for k, v in schema["properties"].items():
+            resolved_type: str = resolve_type(v, use_literals=True)
+            # With newer versions of FastAPI, the resolved_type might already be
+            # Optional[...], in case it was defined as an Optional[...] without a
+            # default. Since we don't want Optional[Optional[...]], we don't mark it as
+            # optional again for the template generator.
+            optional: bool = k not in schema.get("required", []) and not resolved_type.startswith(
+                "Optional["
+            )
+            fields.append(
+                {
+                    "name": k,
+                    "type": resolved_type,
+                    "optional": optional,
+                    "field_args": serialize_args_dict(resolve_field_args(v)),
+                }
+            )
+        return fields
 
 
 def _strip_nonexistant_refs(objects: List[Dict[str, Any]]) -> None:
@@ -133,7 +143,7 @@ def _sort_models(objects: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def get_models(schemas: Dict[str, Any]) -> List[Dict[str, Any]]:
-    objects = (v for v in schemas.values() if "type" not in v or v["type"] == "object")
+    objects = (v for v in schemas.values() if v.get("type") == "object")
 
     models = []
     for o in objects:

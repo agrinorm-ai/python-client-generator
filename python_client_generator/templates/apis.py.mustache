@@ -89,7 +89,7 @@ class {{class_name}}(BaseClient):
         )
         response.raise_for_status()
 {{#return_type}}
-        return {{return_type}}.parse_raw(response.content)
+        return {{return_type}}.model_validate_json(response.content)
 {{/return_type}}
 
 {{/endpoints}}

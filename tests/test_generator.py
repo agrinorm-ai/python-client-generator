@@ -1,4 +1,5 @@
 import filecmp
+import json
 import os
 
 from copy import deepcopy
@@ -49,3 +50,12 @@ def test_assert_openapi_version(openapi: Dict[str, Any]) -> None:
     openapi_copy["openapi"] = "2.0.0"
     with pytest.raises(UnsupportedOpenAPISpec):
         assert_openapi_version(openapi_copy)
+
+
+def test_fastapi_openapi_generation(openapi: Dict[str, Any], tmp_path: Path) -> None:
+    print(tmp_path / "openapi.json")
+    (tmp_path / "openapi.json").write_text(json.dumps(openapi, indent=2))
+    assert (
+        filecmp.cmp(EXPECTED_PATH / "openapi.json", tmp_path / "openapi.json", shallow=False)
+        is True
+    )
